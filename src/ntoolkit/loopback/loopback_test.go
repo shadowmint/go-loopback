@@ -39,6 +39,26 @@ func TestReadWrite(T *testing.T) {
 	})
 }
 
+func TestReadWriteRepeat(T *testing.T) {
+	assert.Test(T, func(T *assert.T) {
+		conn, err := loopback.New()
+		T.Assert(err == nil)
+		defer conn.Close()
+
+		buf1 := [4]byte{0, 1, 2, 3}
+		buf2 := [4]byte{0, 0, 0, 0}
+
+		wrote, werr := conn.A.Write(buf1[:])
+		T.Assert(werr == nil)
+		T.Assert(wrote == 4)
+
+		read, rerr := conn.B.Read(buf2[:])
+		T.Assert(rerr == nil)
+		T.Assert(read == 4)
+		T.Assert(buf2 == [4]byte{0, 1, 2, 3})
+	})
+}
+
 func TestReadWriteTimeout(T *testing.T) {
 	assert.Test(T, func(T *assert.T) {
 		conn, err := loopback.New()
