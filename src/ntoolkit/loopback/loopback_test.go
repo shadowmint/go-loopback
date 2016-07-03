@@ -45,17 +45,39 @@ func TestReadWriteRepeat(T *testing.T) {
 		T.Assert(err == nil)
 		defer conn.Close()
 
-		buf1 := [4]byte{0, 1, 2, 3}
+		buf1 := [16]byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 		buf2 := [4]byte{0, 0, 0, 0}
 
-		wrote, werr := conn.A.Write(buf1[:])
-		T.Assert(werr == nil)
-		T.Assert(wrote == 4)
+		conn.A.SetDeadline(time.Now().Add(time.Second))
+		conn.B.SetDeadline(time.Now().Add(time.Second))
 
-		read, rerr := conn.B.Read(buf2[:])
-		T.Assert(rerr == nil)
-		T.Assert(read == 4)
-		T.Assert(buf2 == [4]byte{0, 1, 2, 3})
+		for i := 0; i < 10; i++ {
+			wrote, werr := conn.A.Write(buf1[:8])
+			T.Assert(werr == nil)
+			T.Assert(wrote == 8)
+
+			wrote, werr = conn.A.Write(buf1[8:])
+			T.Assert(werr == nil)
+			T.Assert(wrote == 8)
+		}
+
+		for i := 0; i < 10; i++ {
+			read, rerr := conn.B.Read(buf2[:])
+			T.Assert(rerr == nil)
+			T.Assert(read == 4)
+
+			read, rerr = conn.B.Read(buf2[:])
+			T.Assert(rerr == nil)
+			T.Assert(read == 4)
+
+			read, rerr = conn.B.Read(buf2[:])
+			T.Assert(rerr == nil)
+			T.Assert(read == 4)
+
+			read, rerr = conn.B.Read(buf2[:])
+			T.Assert(rerr == nil)
+			T.Assert(read == 4)
+		}
 	})
 }
 
