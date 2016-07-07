@@ -19,7 +19,7 @@ func New() (*Loopback, error) {
 	messages := make(chan net.Conn)
 	l, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
-		return nil, errors.Fail(ErrListen, err, "Failed to bind socket")
+		return nil, errors.Fail(ErrListen{}, err, "Failed to bind socket")
 	}
 	go func() {
 		conn, err2 := l.Accept()
@@ -34,13 +34,13 @@ func New() (*Loopback, error) {
 	port := l.Addr().(*net.TCPAddr).Port
 	conn2, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", port))
 	if err != nil {
-		return nil, errors.Fail(ErrConnect, err, "Failed to connect to local socket")
+		return nil, errors.Fail(ErrConnect{}, err, "Failed to connect to local socket")
 	}
 
 	// Get active connection
 	conn1 := <-messages
 	if conn1 == nil {
-		return nil, errors.Fail(ErrListen, nil, "Failed to bind socket")
+		return nil, errors.Fail(ErrListen{}, nil, "Failed to bind socket")
 	}
 
 	return &Loopback{conn1, conn2}, nil

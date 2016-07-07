@@ -1,9 +1,7 @@
 package loopback
 
-const (
-	// ErrListen means binding a random local port failed.
-	ErrListen int = iota
+// ErrListen means binding a random local port failed.
+type ErrListen struct{}
 
-	// ErrConnect indicates connecting to the loopback port failed.
-	ErrConnect
-)
+// ErrConnect indicates connecting to the loopback port failed.
+type ErrConnect struct{}

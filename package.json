@@ -22,8 +22,8 @@
     "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
-    "go-assert": "github:shadowmint/go-assert",
-    "go-errors": "github:shadowmint/go-errors",
+    "go-assert": "github:shadowmint/go-assert#1.0.0",
+    "go-errors": "github:shadowmint/go-errors#1.1.0",
     "mkdirp": "^0.5.1",
     "ncp": "^2.0.0"
   }
